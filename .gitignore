@@ -1,0 +1,15 @@
+# Created by .ignore support plugin (hsz.mobi)
+target
+.project
+.classpath
+.settings
+*.iml
+/.idea/
+bin
+.gradle
+*.DS_Store
+docker*
+*.sql
+classes/
+applicationContext.properties
+node_modules/

@@ -1,11 +1,14 @@
 package DataStructureAndAlgorithm.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author <a href=mailto:yuwei07@meituan.com>余巍</a>
@@ -33,11 +36,21 @@ public class SqlUtils {
 
     public static String Date = format.format(new Date());
 
+    public static Set<String> symbols = Sets.newHashSet();
+
+    public static String version = "_V2";
+
     public static void email(List<String> list){
+        if(CollectionUtils.isEmpty(list)){
+            return;
+        }
+        if(list.get(0) == null || "".equals(list.get(0).trim())){
+            return;
+        }
         String name = list.get(0);
         String template = list.get(1);
         String namespace = list.get(2);
-        String templateName = list.get(3);
+        String templateName = list.get(3) + version;
         String target = list.get(4);
 //        String cc = list.get(5);
         String cc = "";
@@ -55,9 +68,15 @@ public class SqlUtils {
     }
 
     public static void sms(List<String> list){
+        if(CollectionUtils.isEmpty(list)){
+            return;
+        }
+        if(list.get(0) == null || "".equals(list.get(0).trim())){
+            return;
+        }
         String template = list.get(0);
         String namespace = list.get(1);
-        String templateName = list.get(2);
+        String templateName = list.get(2) + version;
         String name = list.get(2);
         String target = list.get(3);
         String date = Date;
@@ -72,36 +91,101 @@ public class SqlUtils {
         System.out.println(sql);
     }
 
-    public static void main1(String[] args) throws Exception {
-        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//201712051.xlsx");
+    public static void main(String[] args) throws Exception {
+        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//智能支付邮件模版1.xlsx");
 
         ExcelUtils utils = new ExcelUtils(is, "2007");
 
-        int sheetIndex = 1;
-        List<List<String>> sheets = utils.read(sheetIndex, 2, utils.getRowCount(sheetIndex));
+        int sheetCount = utils.getSheetCount();
+        for (int i = 0; i < sheetCount; i++) {
+            int sheetIndex = i;
+            List<List<String>> sheets = utils.read(sheetIndex, 1, utils.getRowCount(sheetIndex));
 
-
-        for (List<String> list : sheets) {
-            email(list);
+            for (List<String> list : sheets) {
+                email(list);
+            }
         }
 
         utils.close();
     }
 
-    public static void main(String[] args) throws Exception {
-        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//201712051.xlsx");
+    public static void main2(String[] args) throws Exception {
+        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//旅游客服中心短信20180105.xlsx");
 
         ExcelUtils utils = new ExcelUtils(is, "2007");
 
-        int sheetIndex = 0;
-        List<List<String>> sheets = utils.read(sheetIndex, 2, utils.getRowCount(sheetIndex));
+        int sheetCount = utils.getSheetCount();
+        for (int i = 0; i < sheetCount; i++) {
+            int sheetIndex = i;
+            List<List<String>> sheets = utils.read(sheetIndex, 1, utils.getRowCount(sheetIndex));
 
-
-        for (List<String> list : sheets) {
-            sms(list);
+            for (List<String> list : sheets) {
+                sms(list);
+            }
         }
 
         utils.close();
+    }
+
+    public static void validate(List<String> list){
+        if(CollectionUtils.isEmpty(list)){
+            return;
+        }
+        if(list.get(0) == null || "".equals(list.get(0).trim())){
+            return;
+        }
+
+        for (String l : list) {
+            List<String> subs = ActionConfigPlaceholderHelper.extractAllVariables(l);
+
+            if(!subs.isEmpty()){
+                symbols.addAll(subs);
+            }
+        }
+
+
+    }
+
+    public static void main3(String[] args) throws Exception {
+//        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//旅游客服中心邮件20171129.xlsx");
+        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//旅游客服中心短信20180105.xlsx");
+
+
+        ExcelUtils utils = new ExcelUtils(is, "2007");
+
+        int sheetCount = utils.getSheetCount();
+        for (int i = 0; i < sheetCount; i++) {
+            int sheetIndex = i;
+            List<List<String>> sheets = utils.read(sheetIndex, 1, utils.getRowCount(sheetIndex));
+
+            for (List<String> list : sheets) {
+                validate(list);
+            }
+        }
+
+        utils.close();
+
+        System.out.println(symbols);
+    }
+
+    public static void main4(String[] args) throws IOException {
+        String str = "";
+
+        String[] arr = str.split(" \n");
+
+        Set<Integer> set = Sets.newHashSet();
+        for (String s : arr) {
+            Map<String, String> map = JacksonUtil.toMap(s, String.class, String.class);
+
+            set.addAll(JacksonUtil.toSet(map.get("rightValue"), Integer.class));
+
+        }
+
+        List<Integer> list = Lists.newArrayList(set.iterator());
+        Collections.sort(list);
+
+        System.out.println(list);
+        System.out.println(list.size());
     }
 
 }

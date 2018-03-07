@@ -38,7 +38,7 @@ public class SqlUtils {
 
     public static Set<String> symbols = Sets.newHashSet();
 
-    public static String version = "_V2";
+    public static String version = "V1_";
 
     public static void email(List<String> list){
         if(CollectionUtils.isEmpty(list)){
@@ -50,7 +50,7 @@ public class SqlUtils {
         String name = list.get(0);
         String template = list.get(1);
         String namespace = list.get(2);
-        String templateName = list.get(3) + version;
+        String templateName = list.get(3);
         String target = list.get(4);
 //        String cc = list.get(5);
         String cc = "";
@@ -58,7 +58,7 @@ public class SqlUtils {
 
         String sql = email_template.replace("#[Template]", template)
                 .replace("#[Namespace]", namespace)
-                .replace("#[TemplateName]", templateName)
+                .replace("#[TemplateName]", version + namespace + "-" + templateName)
                 .replace("#[Name]", name)
                 .replace("#[Target]", target)
                 .replace("#[Cc]", cc)
@@ -76,55 +76,19 @@ public class SqlUtils {
         }
         String template = list.get(0);
         String namespace = list.get(1);
-        String templateName = list.get(2) + version;
+        String templateName = list.get(2);
         String name = list.get(2);
         String target = list.get(3);
         String date = Date;
 
         String sql = sms_template.replace("#[Template]", template)
                 .replace("#[Namespace]", namespace)
-                .replace("#[TemplateName]", templateName)
+                .replace("#[TemplateName]", version + namespace + "-" + templateName)
                 .replace("#[Name]", name)
                 .replace("#[Target]", target)
                 .replace("#[Date]", date);
 
         System.out.println(sql);
-    }
-
-    public static void main(String[] args) throws Exception {
-        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//智能支付邮件模版1.xlsx");
-
-        ExcelUtils utils = new ExcelUtils(is, "2007");
-
-        int sheetCount = utils.getSheetCount();
-        for (int i = 0; i < sheetCount; i++) {
-            int sheetIndex = i;
-            List<List<String>> sheets = utils.read(sheetIndex, 1, utils.getRowCount(sheetIndex));
-
-            for (List<String> list : sheets) {
-                email(list);
-            }
-        }
-
-        utils.close();
-    }
-
-    public static void main2(String[] args) throws Exception {
-        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//旅游客服中心短信20180105.xlsx");
-
-        ExcelUtils utils = new ExcelUtils(is, "2007");
-
-        int sheetCount = utils.getSheetCount();
-        for (int i = 0; i < sheetCount; i++) {
-            int sheetIndex = i;
-            List<List<String>> sheets = utils.read(sheetIndex, 1, utils.getRowCount(sheetIndex));
-
-            for (List<String> list : sheets) {
-                sms(list);
-            }
-        }
-
-        utils.close();
     }
 
     public static void validate(List<String> list){
@@ -146,9 +110,45 @@ public class SqlUtils {
 
     }
 
+    public static void main1(String[] args) throws Exception {
+        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//email.xlsx");
+
+        ExcelUtils utils = new ExcelUtils(is, "2007");
+
+        int sheetCount = utils.getSheetCount();
+        for (int i = 0; i < sheetCount; i++) {
+            int sheetIndex = i;
+            List<List<String>> sheets = utils.read(sheetIndex, 1, utils.getRowCount(sheetIndex));
+
+            for (List<String> list : sheets) {
+                email(list);
+            }
+        }
+
+        utils.close();
+    }
+
+    public static void main(String[] args) throws Exception {
+        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//sms.xlsx");
+
+        ExcelUtils utils = new ExcelUtils(is, "2007");
+
+        int sheetCount = utils.getSheetCount();
+        for (int i = 0; i < sheetCount; i++) {
+            int sheetIndex = i;
+            List<List<String>> sheets = utils.read(sheetIndex, 1, utils.getRowCount(sheetIndex));
+
+            for (List<String> list : sheets) {
+                sms(list);
+            }
+        }
+
+        utils.close();
+    }
+
     public static void main3(String[] args) throws Exception {
 //        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//旅游客服中心邮件20171129.xlsx");
-        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//旅游客服中心短信20180105.xlsx");
+        FileInputStream is = new FileInputStream("//Users//yuwei//Downloads//旅游客服中心邮件2018.2.2-0205.xlsx");
 
 
         ExcelUtils utils = new ExcelUtils(is, "2007");

@@ -52,8 +52,7 @@ public class SqlUtils {
         String namespace = list.get(2);
         String templateName = list.get(3);
         String target = list.get(4);
-//        String cc = list.get(5);
-        String cc = "";
+        String cc = list.get(5);
         String date = Date;
 
         String sql = email_template.replace("#[Template]", template)

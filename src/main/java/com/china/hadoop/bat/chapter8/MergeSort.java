@@ -33,7 +33,7 @@ public class MergeSort {
         int j = mid + 1;
         int size = 0;
 
-        for (;i <= mid && j < high; size++) {
+        for (;i <= mid && j <= high; size++) {
             if(array[i] < array[j]){
                 tmp[size] = array[i++];
             }else{
@@ -44,7 +44,7 @@ public class MergeSort {
         while(i <= mid){
             tmp[size++] = array[i++];
         }
-        while(j < high){
+        while(j <= high){
             tmp[size++] = array[j++];
         }
 
@@ -55,7 +55,7 @@ public class MergeSort {
 
     public static void main(String[] args) {
         int[] array = new int[]{4,7,9,1,13,16,8,90,8,4,56};
-        sort(array, 0, array.length);
+        sort(array, 0, array.length - 1);
 
         System.out.println(Arrays.toString(array));
     }
